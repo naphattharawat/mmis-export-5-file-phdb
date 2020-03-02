@@ -11,6 +11,8 @@ import { AuthModule } from '../auth/auth.module';
 import { MainService } from './main.service';
 import { AlertService } from '../alert.service';
 import { LayoutComponent } from './layout/layout.component';
+import { TradeComponent } from './trade/trade.component';
+import { UnitsComponent } from './units/units.component';
 
 @NgModule({
   imports: [
@@ -21,7 +23,7 @@ import { LayoutComponent } from './layout/layout.component';
     ClarityModule,
     AuthModule
   ],
-  declarations: [MainPageComponent, LayoutComponent],
+  declarations: [MainPageComponent, LayoutComponent, TradeComponent, UnitsComponent],
   providers: [
     MainService,
     AlertService

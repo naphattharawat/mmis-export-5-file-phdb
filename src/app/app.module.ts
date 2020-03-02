@@ -3,6 +3,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
@@ -29,6 +30,7 @@ import '@clr/icons/shapes/all-shapes';
     BrowserModule,
     FormsModule,
     HttpModule,
+    HttpClientModule,
     ClarityModule.forRoot(),
     BrowserAnimationsModule,
     AppRoutingModule,

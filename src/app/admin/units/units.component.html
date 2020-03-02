@@ -1,0 +1,17 @@
+<clr-datagrid class="datagrid-compact">
+  <clr-dg-column>Unit Name</clr-dg-column>
+  <clr-dg-column>Code</clr-dg-column>
+  <clr-dg-column></clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let l of list">
+      <clr-dg-cell>{{l.unit_name}}</clr-dg-cell>
+      <clr-dg-cell><input type="text" value="{{l.tmt_id}}" (keyup)="onKey($event,l.unit_id)"></clr-dg-cell>
+      <clr-dg-cell style="padding: 0;">
+        <button class="btn btn-icon btn-sm btn-success" [disabled]="l.isEdit == 'N'" (click)="onSave(l.unit_id)"> 
+        <clr-icon shape="floppy"></clr-icon>
+      </button>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>{{list.length}} รายการ</clr-dg-footer>
+</clr-datagrid>

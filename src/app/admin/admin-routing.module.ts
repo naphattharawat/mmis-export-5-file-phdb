@@ -1,3 +1,5 @@
+import { UnitsComponent } from './units/units.component';
+import { TradeComponent } from './trade/trade.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../auth-guard.service';
@@ -10,10 +12,12 @@ const routes: Routes = [
   {
     path: 'admin',
     component: LayoutComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
       { path: 'main', component: MainPageComponent },
+      { path: 'trade', component: TradeComponent },
+      { path: 'units', component: UnitsComponent },
       { path: '**', component: PageNotFoundComponent },
     ]
   }

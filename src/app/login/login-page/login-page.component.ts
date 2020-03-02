@@ -4,6 +4,8 @@ import { Router } from '@angular/router'
 import { LoginService } from '../login.service';
 import { AlertService } from '../../alert.service';
 import { JwtHelper } from 'angular2-jwt';
+import * as CryptoJS from 'crypto-js';
+import * as mysql from 'mysql';
 
 @Component({
   selector: 'app-login-page',
@@ -11,11 +13,14 @@ import { JwtHelper } from 'angular2-jwt';
   styleUrls: ['./login-page.component.css']
 })
 export class LoginPageComponent implements OnInit {
-  username: string;
-  password: string;
   jwtHelper: JwtHelper = new JwtHelper();
   isLogging = false;
-
+  isError = false;
+  host: string;
+  username: string;
+  password: string;
+  port = 3306;
+  databaseName: string;
   constructor(
     private loginService: LoginService,
     private router: Router,
@@ -23,40 +28,90 @@ export class LoginPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.getConnection();
+  }
+
+  getConnection() {
+    this.host = localStorage.getItem('host') ? localStorage.getItem('host') : '';
+    this.username = localStorage.getItem('username') ? localStorage.getItem('username') : '';
+    if (localStorage.getItem('password')) {
+      const bytes = CryptoJS.AES.decrypt(localStorage.getItem('password'), 'secret key34567');
+      const password = bytes.toString(CryptoJS.enc.Utf8);
+      this.password = password;
+    }
+    this.databaseName = localStorage.getItem('databaseName') ? localStorage.getItem('databaseName') : '';
+    this.port = +localStorage.getItem('port') ? +localStorage.getItem('port') : 3306;
+  }
+
+  saveConnection() {
+    localStorage.setItem('host', this.host);
+    localStorage.setItem('username', this.username);
+    const password = CryptoJS.AES.encrypt(this.password, 'secret key34567').toString();
+    localStorage.setItem('password', password);
+    localStorage.setItem('databaseName', this.databaseName);
+    localStorage.setItem('port', this.port.toString());
+
+    // const bytes = CryptoJS.AES.decrypt(password, 'secret key34567');
+    // const originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+    // console.log(originalText);
+  }
+
+
+  test() {
+    const connection = mysql.createConnection({
+      host: this.host,
+      user: this.username,
+      password: this.password,
+      database: this.databaseName,
+      port: this.port
+    });
+
+    connection.connect();
+
+    const that = this;
+    connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+      if (error) {
+        that.alert.error(error.toString());
+      } else {
+        that.alert.success('Success! Your connection is ready.');
+      }
+    });
   }
 
   enterLogin(event) {
     // enter login
     if (event.keyCode === 13) {
-      this.doLogin();
+      this.save();
     }
   }
 
-  doLogin() {
-    this.isLogging = true;
-    const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE1MjQ1NzY2NjEsImV4cCI6MTU1NjExMjY2MSwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsIkdpdmVuTmFtZSI6IkpvaG5ueSIsIlN1cm5hbWUiOiJSb2NrZXQiLCJFbWFpbCI6Impyb2NrZXRAZXhhbXBsZS5jb20iLCJSb2xlIjpbIk1hbmFnZXIiLCJQcm9qZWN0IEFkbWluaXN0cmF0b3IiXX0.ZphWbQsRLuBxIztg-9iq45Epq6auP3TgW_izsHT1XTM'
-    
-    sessionStorage.setItem('token', token);
-    sessionStorage.setItem('fullname', 'Satit Rianpit');
-    this.isLogging = false;
-    //redirect to admin module
-    this.router.navigate(['admin']);
+  save() {
+    this.saveConnection();
+    const connection = mysql.createConnection({
+      host: this.host,
+      user: this.username,
+      password: this.password,
+      database: this.databaseName,
+      port: this.port
+    });
 
-    // this.loginService.testLogin(this.username, this.password)
-    //   .then((token: string) => {
-    //     const decodedToken = this.jwtHelper.decodeToken(token);
-    //     const fullname = `${decodedToken.firstname} ${decodedToken.lastname}`;
+    connection.connect();
 
-    //     sessionStorage.setItem('token', token);
-    //     sessionStorage.setItem('fullname', fullname);
-    //     // hide spinner
-    //     this.isLogging = false;
-    //     // redirect to admin module
-    //     this.router.navigate(['admin']);
-    //   })
-    //   .catch((error) => {
-    //     this.isLogging = false;
-    //     this.alert.error(JSON.stringify(error));
-    //   });
+    const that = this;
+    let _error = false;
+    connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+      if (error) {
+        _error = true;
+        that.alert.error(error.toString());
+      } else {
+        _error = false;
+      }
+    });
+    console.log(_error);
+    if (!_error) {
+      // this.router.navigate(['admin']);
+      this.router.navigateByUrl('/admin');
+    }
   }
 }

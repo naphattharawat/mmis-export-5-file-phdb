@@ -2,29 +2,39 @@
   <div class="login-wrapper">
     <form class="login">
       <label class="title">
-            <h3 class="welcome">Welcome to</h3>
-            Company Product Name
-            <h5 class="hint">Use your Company ID to sign in or create one now</h5>
+            <!-- <h3 class="welcome">Welcome to</h3> -->
+            โปรแกรมส่งออก 5 แฟ้ม
+            <h5 class="hint">MMIS Export 5 file to phdb.</h5>
         </label>
       <div class="login-group">
-        <div class="auth-source select">
-          <select id="login-auth-source-1">
-                    <option>Local Users</option>
-                    <option>Administrator</option>
-                </select>
+        <div class="row">
+          <div class="col-md-4">Host:</div>
+          <div class="col-md-8">
+            <input type="text" name="host" clrInput placeholder="Host" [(ngModel)]="host" />
+          </div>
+  
+          <div class="col-md-4">Username:</div>
+          <div class="col-md-8"> <input type="text" name="username" clrInput placeholder="Username"
+              [(ngModel)]="username" /></div>
+  
+          <div class="col-md-4">Password:</div>
+          <div class="col-md-8"> <input type="password" name="password" clrPassword placeholder="Password"
+              [(ngModel)]="password" /></div>
+  
+          <div class="col-md-4">Port:</div>
+          <div class="col-md-8"><input type="text" name="port" clrInput placeholder="Port" [(ngModel)]="port" />
+          </div>
+  
+          <div class="col-md-4">Database Name:</div>
+          <div class="col-md-8"><input type="text" name="databaseName" clrInput placeholder="Database Name"
+              [(ngModel)]="databaseName" /></div>
+  
         </div>
-        <input class="username" (keypress)="enterLogin($event)" type="text" id="login_username" placeholder="Username">
-        <input class="password" (keypress)="enterLogin($event)" type="password" id="login_password" placeholder="Password">
-        <div class="checkbox">
-          <input type="checkbox" id="rememberme">
-          <label for="rememberme">
-                    Remember me
-                </label>
-        </div>
-        <div class="error active">
+        <div class="error active" *ngIf="isError">
           Invalid user name or password
         </div>
-        <button type="submit" class="btn btn-primary"(click)="doLogin()">NEXT</button>
+        <button type="submit" class="btn btn-primary"(click)="test()">TEST</button>
+        <button type="submit" class="btn btn-success"(click)="save()">Save & Next</button>
         <a href="javascript://" class="signup">Sign up for a Company ID</a>
       </div>
     </form>
